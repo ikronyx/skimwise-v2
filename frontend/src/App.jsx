@@ -30,7 +30,7 @@ export default function App() {
       const data = await res.json();
       setSummary(data.summary);
     } catch (err) {
-      setError(err.message || "Failed to summarize PDF");
+      setError(err.message || "Failed to summarize PDF!");
     } finally {
       setLoading(false);
     }
