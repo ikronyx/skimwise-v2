@@ -6,9 +6,14 @@ from url_utils import extract_text_from_url
 
 app = FastAPI(title="Skimwise Backend")
 
+origins = [
+    "https://skimwise-v2-d3ol15wuf-ikronyxs-projects.vercel.app",
+    "http://localhost:3000"  # For local dev
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update to specific domains for production
+    allow_origins=origins,  # Update to specific domains for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
