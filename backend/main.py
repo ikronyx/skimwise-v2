@@ -1,48 +1,68 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from summarizer import summarize_text
-from pdf_utils import extract_text_from_pdf
-from url_utils import extract_text_from_url
+from pydantic import BaseModel
+import requests
+from bs4 import BeautifulSoup
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lex_rank import LexRankSummarizer
 
-app = FastAPI(title="Skimwise Backend")
+app = FastAPI()
 
+# Allow only your frontend domain
 origins = [
-    "https://skimwise-v2-d3ol15wuf-ikronyxs-projects.vercel.app",
-    "http://localhost:3000"  # For local dev
+    "https://skimwise-v2-izjdvs3r2-ikronyxs-projects.vercel.app/"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Update to specific domains for production
+    allow_origins=origins,  # restrict to your frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/summarize/pdf")
-async def summarize_pdf(
-    summary_type: str = Form(...),
-    file: UploadFile = File(...)
-):
-    if file.content_type != "application/pdf":
-        raise HTTPException(status_code=400, detail="File must be a PDF")
+# 👋 Test endpoint
+@app.get("/")
+def hello():
+    return {"message": "Hello from Skimwise backend!"}
 
-    contents = await file.read()
-    text = extract_text_from_pdf(contents)
-    if not text.strip():
-        raise HTTPException(status_code=400, detail="No text found in PDF")
 
-    summary = summarize_text(text, summary_type)
-    return {"summary": summary}
+# 🧠 Request model
+class URLSummaryRequest(BaseModel):
+    url: str
+    summary_type: str = "Quick"  # placeholder for options like "Quick", "In-Depth", etc.
 
+
+# 📄 Endpoint to summarize a URL
 @app.post("/summarize/url")
-async def summarize_url(
-    summary_type: str = Form(...),
-    url: str = Form(...)
-):
-    text = extract_text_from_url(url)
-    if not text.strip():
-        raise HTTPException(status_code=400, detail="No text found at URL")
+def summarize_url(data: URLSummaryRequest):
+    try:
+        response = requests.get(data.url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        paragraphs = soup.find_all("p")
+        text = "\n".join(p.get_text() for p in paragraphs)
 
-    summary = summarize_text(text, summary_type)
-    return {"summary": summary}
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LexRankSummarizer()
+
+        # Choose number of sentences based on summary_type
+        sentence_count = {
+            "Quick": 3,
+            "In-Depth": 7,
+            "By Section": 5  # simple fallback
+        }.get(data.summary_type, 3)
+
+        summary = summarizer(parser.document, sentence_count)
+        summary_text = "\n".join(str(sentence) for sentence in summary)
+
+        return {
+            "status": "success",
+            "summary": summary_text
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
