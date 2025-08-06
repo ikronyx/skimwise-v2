@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pdfplumber
+requests
+beautifulsoup4
+sumy
