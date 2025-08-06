@@ -3,7 +3,7 @@ import PdfUploader from "./components/PdfUploader";
 import UrlInput from "./components/UrlInput";
 import SummaryDisplay from "./components/SummaryDisplay";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://skimwise-v2-production.up.railway.app/";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://skimwise-v2-production.up.railway.app";
 
 export default function App() {
   const [summary, setSummary] = useState("");
