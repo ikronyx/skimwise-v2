@@ -11,7 +11,7 @@ app = FastAPI()
 
 # Allow only your frontend domain
 origins = [
-    "https://skimwise-v2-izjdvs3r2-ikronyxs-projects.vercel.app/"
+    "https://skimwise-v2-d3ol15wuf-ikronyxs-projects.vercel.app"
 ]
 
 app.add_middleware(
