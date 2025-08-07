@@ -5,15 +5,14 @@
 
 ### 🌐 Live Demo
 
-- **Frontend (Vercel):** [https://your-vercel-url.vercel.app](https://your-vercel-url.vercel.app)
-- **Backend (Railway):** [https://your-railway-url.up.railway.app](https://your-railway-url.up.railway.app)
+- **Frontend (Vercel):** [https://skimwise-v2-bdl6.vercel.app/](https://your-vercel-url.vercel.app)
 
 ---
 
 ## 🔧 Tech Stack
 
 ### Frontend
-- **React** (with Vite)
+- **React** (Create REACT)
 - **Tailwind CSS**
 - **Deployed on [Vercel](https://vercel.com)** _(Free Tier)_
 
