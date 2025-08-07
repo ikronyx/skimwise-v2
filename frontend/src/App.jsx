@@ -36,31 +36,61 @@ export default function App() {
     }
   };
 
+  // const handleUrlSubmit = async (url) => {
+  //   setLoading(true);
+  //   setError("");
+  //   setSummary("");
+
+  //   const formData = new FormData();
+  //   formData.append("url", url);
+  //   formData.append("summary_type", summaryType);
+
+  //   try {
+  //     const res = await fetch(`${BACKEND_URL}/summarize/url`, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+  //     if (!res.ok) {
+  //       throw new Error(`Error: ${res.statusText}`);
+  //     }
+  //     const data = await res.json();
+  //     setSummary(data.summary);
+  //   } catch (err) {
+  //     setError(err.message || "Failed to summarize URL");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleUrlSubmit = async (url) => {
-    setLoading(true);
-    setError("");
-    setSummary("");
+  setLoading(true);
+  setError("");
+  setSummary("");
 
-    const formData = new FormData();
-    formData.append("url", url);
-    formData.append("summary_type", summaryType);
+  try {
+    const res = await fetch(`${BACKEND_URL}/summarize/url`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url: url,
+        summary_type: summaryType,
+      }),
+    });
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/summarize/url`, {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        throw new Error(`Error: ${res.statusText}`);
-      }
-      const data = await res.json();
-      setSummary(data.summary);
-    } catch (err) {
-      setError(err.message || "Failed to summarize URL");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error(`Error: ${res.statusText}`);
     }
-  };
+
+    const data = await res.json();
+    setSummary(data.summary);
+  } catch (err) {
+    setError(err.message || "Failed to summarize URL");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="app-container">
