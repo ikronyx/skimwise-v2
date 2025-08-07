@@ -5,7 +5,7 @@
 
 ### 🌐 Live Demo
 
-- **Frontend (Vercel):** [https://skimwise-v2-bdl6.vercel.app/](https://your-vercel-url.vercel.app)
+- **Frontend (Vercel):** [https://skimwise-v2-bdl6.vercel.app/](https://skimwise-v2-bdl6.vercel.app/)
 
 ---
 
